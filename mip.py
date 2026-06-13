@@ -1,11 +1,10 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from utils import load_text_file
+from utils import load_file
 import re
 
 @dataclass
 class LotSizingParams:
-    """Parametri dell'istanza (input del modello)."""
     J: int                          # numero di prodotti
     T: int                          # numero di periodi
     d: list[list[float]]            # d[j][t]  domanda
@@ -28,18 +27,12 @@ class MIPModel:
     c_binary: list[str]             = field(default_factory=list)  # y_jt in {0,1}
 
 def create_mip_from_file(path: str) -> MIPModel:
-    """
-    Legge un file .lp e restituisce un MIPModel popolato.
- 
-    I vincoli <= che non coinvolgono binarie vanno in c_capacity (generico),
-    senza distinguere tra capacità stock (3) e capacità produzione (5) —
-    distinzione che richiede il mapping e non è necessaria per ora.
-    """
-    text = load_text_file(path)
+    text = load_file(path)
     model = MIPModel()
  
     current_section = None
     raw_constraints = []
+    done = False
  
     for line in text.splitlines():
         stripped = line.strip()
@@ -47,20 +40,23 @@ def create_mip_from_file(path: str) -> MIPModel:
             continue
         low = stripped.lower()
  
+        # in which section?
         if low in ("minimize", "maximize"):
             current_section = "objective"
-        elif low in ("subject to", "s.t.", "st"):
+        elif low in ("subject to"):
             current_section = "constraints"
         elif low == "binaries":
             current_section = "binaries"
         elif low == "end":
-            break
-        elif current_section == "objective":
-            model.objective_fun.append(stripped)
-        elif current_section == "constraints":
-            raw_constraints.append(stripped)
-        elif current_section == "binaries":
-            model.c_binary.append(stripped)
+            done = True
+        
+        if not done:
+            if current_section == "objective":
+                model.objective_fun.append(stripped)
+            elif current_section == "constraints":
+                raw_constraints.append(stripped)
+            elif current_section == "binaries":
+                model.c_binary.append(stripped)
  
     binary_set = set(model.c_binary)
  
@@ -72,10 +68,10 @@ def create_mip_from_file(path: str) -> MIPModel:
         if ">=" in line or ("=" in line and "<" not in line):
             model.c_balance.append(line)
         elif "<=" in line and has_binary and has_continuous:
-            # x_jt - K y_jt <= 0 : coinvolge una variabile continua e una binaria
+            # x_jt - K y_jt <= 0
             model.c_prod_capacity_k.append(line)
         elif "<=" in line and not has_binary:
-            # (3) o (5): non distinguiamo senza mapping
+            # (3) o (5)
             model.c_capacity.append(line)
  
     return model

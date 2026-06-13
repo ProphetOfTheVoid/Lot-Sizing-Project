@@ -29,7 +29,7 @@ def resolve_periods(x_to_y_dict, balance_results):
     first_periods = [x for x, v in balance_results.items() if v["x_s"] is None]
     
     for j, x_jt_0 in enumerate(first_periods):
-        t = 1
+        t = 0  # changed from 1
         current = x_jt_0
         while current is not None:
             x_s = balance_results[current]["x_s"]
@@ -40,13 +40,16 @@ def resolve_periods(x_to_y_dict, balance_results):
             if x_p:
                 mapping[x_p] = {"role": "s", "j": j, "t": t}
             if x_s:
-                mapping[x_s] = {"role": "s", "j": j, "t": t - 1}
+                mapping[x_s] = {"role": "s", "j": j, "t": t - 1}  # becomes -1 for first period, was 0
             mapping[y] = {"role": "y", "j": j, "t": t}
             
             current = prev_stock_to_prod.get(x_p)
             t += 1
     
     return mapping
+
+def sort_mapping(mapping: dict) -> dict:
+    return dict(sorted(mapping.items(), key=lambda item: int(item[0].split('_')[1])))
 
 def generate_mapping_grounded(instance_file: str) -> dict:
     instance = create_mip_from_file(instance_file)

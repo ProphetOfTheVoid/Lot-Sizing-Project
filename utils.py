@@ -1,43 +1,48 @@
 from pathlib import Path
-import ollama, re, json
+import ollama
 
 
-# UTILS FUNCTIONS
-def load_text_file(path: str) -> str:
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+def load_file(path: str) -> str:
+    supported = {".jl", ".lp", ".txt", ".json"}
+    extension = Path(path).suffix.lower()
 
-def load_description(path: str) -> str:
-    ext = Path(path).suffix.lower()
-    if ext == ".txt":
-        return load_text_file(path)
+    if extension not in supported:
+        raise ValueError(f"\nFile format not supported: {extension}")
     else:
-        raise ValueError(f"File format not supported: {ext}")
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
 
-def load_mip_model(path: str) -> str:
-    supported = {".jl", ".mod", ".lp", ".txt"}
-    ext = Path(path).suffix.lower()
-    if ext not in supported:
-        raise ValueError(f"File format not supported: {ext}")
-    return load_text_file(path)
-
-def load_prompt(prompt_path: str, instance: str) -> str:
-    with open(prompt_path, "r", encoding="utf-8") as f:
-        template = f.read()
+# The prompt contains a placeholder {instance} in place of the actual instance to save up space
+# This function replaces the placeholder with the actual instance
+def setup_prompt(prompt_path: str, instance: str) -> str:
+    template = load_file(prompt_path)
     return template.replace("{instance}", instance)
 
-def query_llm(system_prompt: str, user_prompt: str, model: str, instance: str) -> str:
-    ref1_lp = load_text_file("small1.lp")
-    ref1_json = load_text_file("small1_mapped.json")
-    ref2_lp = load_text_file("medium_4p5t.lp")
-    ref2_json = load_text_file("4p5t_mapped.json")
-    ref3_lp = load_text_file("medium_4p6t.lp")
-    ref3_json = load_text_file("4p6t_mapped.json")
-
-    p = "Exactly. That's the output I expected. Now, do the same on the following file. Before producing the output, reason step by step:\n 1. first identify which variables are binary\n 2.trace the balance constraints to determine how many products and periods there are\n 3.assign role, j and t to each variable"
+# Old approach: prompt contains all info and guidelines
+def prompted_query_llm(description: str, system_prompt: str, user_prompt: str, model: str, instance: str) -> str:
     response = ollama.chat(
         model=model,
-        
+        messages=[
+            {"role": "system", "content": description + "\n" + system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        format="json"
+    )
+    return response["message"]["content"]
+
+# New approach. No prompt: let the LLM infere the task from the fake conversation
+def promptless_query_llm(model: str, instance: str) -> str:
+
+    # CHANGE HERE AS NEEDED
+    ref1_lp = load_file("instances/3p5t_first.lp")
+    ref1_json = load_file("instances/3p5t_first_mapped.json")
+    ref2_lp = load_file("instances/4p5t.lp")
+    ref2_json = load_file("instances/4p5t_mapped.json")
+    ref3_lp = load_file("instances/4p6t.lp")
+    ref3_json = load_file("instances/4p6t_mapped.json")
+
+    response = ollama.chat(
+        model=model,
         messages=[
             #{"role": "system", "content": system_prompt},
             #{"role": "user", "content": user_prompt}
@@ -48,8 +53,13 @@ def query_llm(system_prompt: str, user_prompt: str, model: str, instance: str) -
             {"role": "assistant", "content": ref2_json},
             {"role": "user", "content": "Perfect. Now, try with a bigger instace: \n\n" + ref3_lp},
             {"role": "assistant", "content": ref3_json},
-            {"role": "user", "content": p + "Here is the file:\n\n" + instance}
+            {"role": "user", "content": "Exactly. That's the output I expected. Here, try with this instance now:\n\n" + instance}
         ],
+        options={
+            "num_ctx": 16384  # or 32768
+        },
         format="json"
+
+
     )
     return response["message"]["content"]
