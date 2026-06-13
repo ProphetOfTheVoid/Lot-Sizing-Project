@@ -1,0 +1,30 @@
+THE LOT SIZING PROBLEM
+
+The LSP consists of finding, for each product and each period of the timeline,
+the production rate needed to satisfy the demand while minimising the overall cost,
+which includes both fixed (e.g. set-up) and variable per-unit costs (e.g. production, stock).
+
+Variables:
+- x_jt: amount of product j produced in period t
+- y_jt: set-up variable. Equals 1 if x_jt > 0, 0 otherwise
+- s_jt: stock of product j in period t
+
+Parameters:
+- d_jt: demand of product j in period t
+- c_jt: unitary cost of production for product j in period t
+- f_jt: unitary cost of stocking for product j in period t
+- g_jt: unitary cost of set-up for product j in period t
+- K: max per-product production capacity in every interval
+- R: max overall production capacity in every interval
+- Q: max overall stock capacity in every interval
+
+Model:
+min  sum_{j,t} c_jt * x_jt + sum_{j,t} f_jt * s_jt + sum_{j,t} g_jt * y_jt
+
+subject to:
+(balance) x_jt + s_j(t-1) -s_jt =  D_jt         for all j, t
+(stock_capacity) sum_j s_jt <= Q                        for all t
+(prod_capacity_K) x_jt - K * y_jt <= 0                       for all j, t
+(prod_capacity_R) sum_j x_jt <= R                        for all t
+(non_negativity) s_jt >= 0, x_jt >= 0                  for all j, t
+(binary) y_jt in {0, 1}                         for all j, t

@@ -1,0 +1,156 @@
+{
+  "num_periods": 5,
+  "num_products": 5,
+  "variables": [
+    {
+      "role": "product",
+      "j": 0,
+      "t": 0
+    },
+    {
+      "role": "product",
+      "j": 1,
+      "t": 0
+    },
+    {
+      "role": "product",
+      "j": 2,
+      "t": 0
+    },
+    {
+      "role": "product",
+      "j": 3,
+      "t": 0
+    },
+    {
+      "role": "product",
+      "j": 4,
+      "t": 0
+    },
+    {
+      "role": "product",
+      "j": 0,
+      "t": 1
+    },
+    {
+      "role": "product",
+      "j": 1,
+      "t": 1
+    },
+    {
+      "role": "product",
+      "j": 2,
+      "t": 1
+    },
+    {
+      "role": "product",
+      "j": 3,
+      "t": 1
+    },
+    {
+      "role": "product",
+      "j": 4,
+      "t": 1
+    },
+    {
+      "role": "product",
+      "j": 0,
+      "t": 2
+    },
+    {
+      "role": "product",
+      "j": 1,
+      "t": 2
+    },
+    {
+      "role": "product",
+      "j": 2,
+      "t": 2
+    },
+    {
+      "role": "product",
+      "j": 3,
+      "t": 2
+    },
+    {
+      "role": "product",
+      "j": 4,
+      "t": 2
+    },
+    {
+      "role": "product",
+      "j": 0,
+      "t": 3
+    },
+    {
+      "role": "product",
+      "j": 1,
+      "t": 3
+    },
+    {
+      "role": "product",
+      "j": 2,
+      "t": 3
+    },
+    {
+      "role": "product",
+      "j": 3,
+      "t": 3
+    },
+    {
+      "role": "product",
+      "j": 4,
+      "t": 3
+    },
+    {
+      "role": "product",
+      "j": 0,
+      "t": 4
+    },
+    {
+      "role": "product",
+      "j": 1,
+      "t": 4
+    },
+    {
+      "role": "product",
+      "j": 2,
+      "t": 4
+    },
+    {
+      "role": "product",
+      "j": 3,
+      "t": 4
+    },
+    {
+      "role": "product",
+      "j": 4,
+      "t": 4
+    },
+    {
+      "role": "auxiliary",
+      "j": 0,
+      "t": 5
+    },
+    {
+      "role": "auxiliary",
+      "j": 1,
+      "t": 5
+    },
+    {
+      "role": "auxiliary",
+      "j": 2,
+      "t": 5
+    },
+    {
+      "role": "auxiliary",
+      "j": 3,
+      "t": 5
+    },
+    {
+      "role": "auxiliary",
+      "j": 4,
+      "t": 5
+    }
+  ]
+}
