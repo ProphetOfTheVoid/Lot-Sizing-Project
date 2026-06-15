@@ -26,7 +26,7 @@ The repository is structured as follows:
 * The `prompt` folder contains `description.txt`, `user_prompt.txt` and `system_prompt.txt`, all used in the Prompted Query method.
 
 ## Guide to usage
-To execute the program, simply run: `python .\main.py`
+To execute the program, position in the `Lot Sizing` folder and run: `python .\main.py`
 
 Head to `main.py` if you wish to:
 * Change the instance (.lp) file

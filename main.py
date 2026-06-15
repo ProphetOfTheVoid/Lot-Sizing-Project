@@ -47,7 +47,7 @@ def main():
     
     end = time.time()
     print(f"Mapping AI completed and stored in {OUTPUT_PATH}")
-    print(f"Elasped time for LLM query: {end-start}")
+    print(f"Elasped time for LLM query: {(end-start)/60} minutes")
 
 if __name__=="__main__":
     main()

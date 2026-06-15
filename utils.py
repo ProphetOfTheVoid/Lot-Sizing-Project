@@ -56,7 +56,7 @@ def promptless_query_llm(model: str, instance: str) -> str:
             {"role": "user", "content": "Exactly. That's the output I expected. Here, try with this instance now:\n\n" + instance}
         ],
         options={
-            "num_ctx": 16384  # or 32768
+            "num_ctx": 32768  # 32768 or 16384
         },
         format="json"
 
