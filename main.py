@@ -4,9 +4,9 @@ from truth import generate_mapping_grounded, sort_mapping
 
 
 # GLOBAL VARIABLES
-MODEL = "mistral-small:22b"
+MODEL = "gemma4:latest"
 DESCRIPTION_FILE = "prompt/description.txt"
-INSTANCE_FILE = "instances/4p6t.lp"
+INSTANCE_FILE = "instances/3p10t.lp"
 SYS_PROMPT_FILE = "prompt/system_prompt.txt"
 USR_PROMPT_FILE = "prompt/user_prompt.txt"
 OUTPUT_PATH = "output/mapping.json"
@@ -33,6 +33,7 @@ def main():
     print(f"Mapping ground-truth completed")
     start = time.time()
 
+    
     # Invoking the LLM to query the mapping
     #output = prompted_query_llm(description, sys_prompt, usr_prompt, MODEL, instance)
     output = promptless_query_llm(MODEL, instance)
@@ -45,6 +46,7 @@ def main():
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(sort_mapping(parsed), f, indent=2)    
     
+
     end = time.time()
     print(f"Mapping AI completed and stored in {OUTPUT_PATH}")
     print(f"Elasped time for LLM query: {(end-start)/60} minutes")
