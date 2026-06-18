@@ -29,7 +29,7 @@ def resolve_periods(x_to_y_dict, balance_results):
     first_periods = [x for x, v in balance_results.items() if v["x_s"] is None]
     
     for j, x_jt_0 in enumerate(first_periods):
-        t = 0  # changed from 1
+        t = 0
         current = x_jt_0
         while current is not None:
             x_s = balance_results[current]["x_s"]
